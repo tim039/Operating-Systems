@@ -25,17 +25,17 @@ void addMp3() {
 	mp3_t newMp3;
 
 	printf("Please input the name of an MP3 you would like to add\n");
-	scanf(%s,newMp3->title);
+	scanf("%s",newMp3.title);
 
 
 	printf("Who is the artist of the MP3?\n");
-	scanf(%s, newMp3->artist);
+	scanf("%s", newMp3.artist);
 
-	print("What is todays date in the form xx-xx-xxxx\n");
-	scanf(%s, newMp3->date);
+	printf("What is todays date in the form xx-xx-xxxx\n");
+	scanf("%s", newMp3.date);
 
 	printf("How long is the song in seconds?\n");
-	scanf(%d, newMp3->runTime);
+	scanf("%d",&(newMp3.runTime));
 	
 
 }
@@ -47,7 +47,11 @@ void deleteMp3() {
 }
 
 
+void test() {
 
+printf("heiie\n");
+
+}
 
 
 
