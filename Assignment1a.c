@@ -3,6 +3,13 @@
 
 int main() {
 
-	test();
+char * adding = "y";
 
+while(adding == "y") {
+
+	addMp3();
+	printf("Do you have any more mp3's to add? (y/n) \n");
+	scanf("%s", adding); 
+
+}
 }
