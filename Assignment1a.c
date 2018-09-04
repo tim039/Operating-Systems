@@ -12,4 +12,5 @@ while(adding == "y") {
 	scanf("%s", adding); 
 
 }
+	printf("Your MP3's have been added\n");
 }

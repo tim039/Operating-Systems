@@ -19,7 +19,6 @@ typedef struct mp3 {
 
 
 mp3_t *head = NULL;
-//head = malloc(sizeof(mp3_t));
 
 char buffer[BUFFERSIZE];
 
@@ -27,14 +26,17 @@ int len;
 
 
 void addMp3() {	
+
 	
 	mp3_t* newMp3 = (mp3_t *)malloc(sizeof(mp3_t));
+	
+	free(newMp3->title);
+	free(newMp3->artist);
+	free(newMp3->date);
+	free(newMp3->runTime);
+	free(newMp3);
 
 	
-	
-
-	
-	//newMp3 = (mp3_t *)malloc(sizeof(newMp3->title));
 	printf("Please input the name of an MP3 you would like to add\n");
 	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 
@@ -45,18 +47,45 @@ void addMp3() {
 		strcpy(newMp3->title, buffer);
 	}
 
-	newMp3 = (mp3_t *)malloc(sizeof(newMp3->artist));
+	
 	printf("Who is the artist of the MP3?\n%s", newMp3->artist);
-	scanf("%s",newMp3->artist);
-	//fgets(newMp3->artist, BUFFERSIZE, stdin);
+	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+
+		len = (int) strlen(buffer);
+		buffer[len - 1] = '\0';
+		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
+		newMp3->artist = (char *) malloc(len);
+		strcpy(newMp3->artist, buffer);
+	}
+	
 
 
-
+	
 	printf("What is todays date in the form xx-xx-xxxx\n");
-	scanf("%s", newMp3->date);
+	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+		
+		len = (int) strlen(buffer);
+		buffer[len - 1] = '\0';
+		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
+		newMp3->date = (char *) malloc(len);
+		strcpy(newMp3->date, buffer);
+
+	}	
+
+
 
 	printf("How long is the song in seconds?\n");
-	scanf("%d",&(newMp3->runTime));
+	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+		
+		len = (int) strlen(buffer);
+		buffer[len - 1] = '\0';
+		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
+		newMp3->runTime = (int *) malloc(4);
+		newMp3->runTime = *buffer;
+
+	}	
+
+
 	
 
 	if(head == NULL) {
@@ -102,15 +131,6 @@ void printBtoE() {
 void printEtoB() {
 
 
-
-}
-
-
-
-
-void test() {
-
-printf("heiie\n");
 
 }
 
