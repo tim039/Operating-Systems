@@ -23,19 +23,34 @@ mp3_t *head = NULL;
 
 char buffer[BUFFERSIZE];
 
-void addMp3() {
+int len;
 
+
+void addMp3() {	
+	
 	mp3_t* newMp3 = (mp3_t *)malloc(sizeof(mp3_t));
 
 	
-	printf("Please input the name of an MP3 you would like to add\n%s", newMp3->title);
-	//scanf("%s",newMp3->title);
-	fgets(newMp3->title, BUFFERSIZE, stdin);
+	
 
+	
+	//newMp3 = (mp3_t *)malloc(sizeof(newMp3->title));
+	printf("Please input the name of an MP3 you would like to add\n");
+	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 
+		len = (int) strlen(buffer);
+		buffer[len - 1] = '\0';
+		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
+		newMp3->title = (char *) malloc(len);
+		strcpy(newMp3->title, buffer);
+	}
+
+	newMp3 = (mp3_t *)malloc(sizeof(newMp3->artist));
 	printf("Who is the artist of the MP3?\n%s", newMp3->artist);
-	//scanf("%s",newMp3->artist);
-	fgets(newMp3->artist, BUFFERSIZE, stdin);
+	scanf("%s",newMp3->artist);
+	//fgets(newMp3->artist, BUFFERSIZE, stdin);
+
+
 
 	printf("What is todays date in the form xx-xx-xxxx\n");
 	scanf("%s", newMp3->date);
