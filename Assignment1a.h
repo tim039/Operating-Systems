@@ -75,7 +75,8 @@ void addMp3() {
 
 
 	printf("How long is the song in seconds?\n");
-	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+	scanf("%o",& newMp3->runTime);
+	/*if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 		
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
@@ -83,7 +84,7 @@ void addMp3() {
 		newMp3->runTime = (int *) malloc(4);
 		newMp3->runTime = *buffer;
 
-	}	
+	}	*/
 
 
 	
@@ -115,6 +116,37 @@ void addMp3() {
 
 
 void deleteMp3() {
+
+	mp3_t *temp = head;
+
+	char *deletedMp3;
+
+	printf("Enter the title of the song you would like to delete\n");
+	scanf("%s", deletedMp3);
+
+	while(temp->title != deletedMp3) {
+		if (temp->next != NULL) {	
+			temp = temp->next;
+		}
+
+		else {
+			printf("Mp3 not found\n");
+			break;
+		}
+	}
+
+	free(temp);
+
+	
+	/*if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+
+		len = (int) strlen(buffer);
+		buffer[len - 1] = '\0';
+		deletedMp3 = (mp3_t *) malloc(sizeof(mp3_t));
+		deletedMp3->title = (char *) malloc(len);
+		strcpy(newMp3->title, buffer);
+	}
+*/
 
 
 
