@@ -1,11 +1,11 @@
 
 CC=gcc
 CFLAGS=-I
-DEPS = Assignment1a.h
+DEPS = mp3.h
 
 %.o: %.c $(DEPS)
-	$(CC) $(CFLAGS) -g -c Assignment1a.c 
+	$(CC) $(CFLAGS) -g -c mp3.c 
 
-Assignment1a: Assignment1a.o
-	$(CC) -g -o Assignment1a Assignment1a.o
+mp3: mp3.o
+	$(CC) -g -o mp3 mp3.o
 

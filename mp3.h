@@ -28,18 +28,21 @@ int len;
 void addMp3() {	
 
 	
+	memset(buffer, 0, sizeof(buffer));
+
+
 	mp3_t* newMp3 = (mp3_t *)malloc(sizeof(mp3_t));
-	
+/*	
 	free(newMp3->title);
 	free(newMp3->artist);
 	free(newMp3->date);
 	free(newMp3->runTime);
 	free(newMp3);
+*/
 
 	
 	printf("Please input the name of an MP3 you would like to add\n");
 	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
-
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
 		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
@@ -48,7 +51,7 @@ void addMp3() {
 	}
 
 	
-	printf("Who is the artist of the MP3?\n%s", newMp3->artist);
+	printf("Who is the artist of the MP3?\n");
 	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 
 		len = (int) strlen(buffer);
@@ -75,17 +78,19 @@ void addMp3() {
 
 
 	printf("How long is the song in seconds?\n");
-	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+	scanf("%o", &newMp3->runTime);
+
+/*	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 		
-		len = (int) strlen(buffer);
+		//len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
 		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
-		newMp3->runTime = (int *) malloc(4);
+		newMp3->runTime = (int) malloc(sizeof(int));
 		newMp3->runTime = *buffer;
 
 	}
 
-
+*/
 	
 
 	if(head == NULL) {
