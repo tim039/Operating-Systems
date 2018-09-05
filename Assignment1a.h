@@ -75,8 +75,7 @@ void addMp3() {
 
 
 	printf("How long is the song in seconds?\n");
-	scanf("%o",& newMp3->runTime);
-	/*if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 		
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
@@ -84,7 +83,7 @@ void addMp3() {
 		newMp3->runTime = (int *) malloc(4);
 		newMp3->runTime = *buffer;
 
-	}	*/
+	}
 
 
 	
