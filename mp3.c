@@ -26,14 +26,14 @@ int counter = 0;
 
 
 int main() {
+/*
 
 	char adding = 'y';
 
 	while(adding == 'y') {
 	counter++;
-	mp3_t* newMp3 = (mp3_t *)malloc(sizeof(mp3_t));
 
-		addMp3(newMp3);
+		addMp3();
 	
 		printf("Do you have another MP3 to add? (y/n) \n");
 		scanf("%c", &adding);
@@ -43,26 +43,22 @@ int main() {
 
 	printf("Your MP3's have been added\n");
 
-	printBtoE();
-
+*///	printBtoE();
+	deleteMp3();
+//	printEtoB();
 }
 
 
 
 
 
-void addMp3(mp3_t* newMp3) {	
+void addMp3() {	
 
+	mp3_t* newMp3 =malloc(sizeof(mp3_t));
 
 
 	
 	memset(buffer, 0, sizeof(buffer));
-	if(head == NULL) {
-		newMp3->prev = NULL;
-		newMp3->next = NULL;
-		head = newMp3;
-	}
-
 
 	if (counter >= 2) {
 
@@ -77,11 +73,9 @@ void addMp3(mp3_t* newMp3) {
 	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
-		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
-		newMp3->title = (char *) malloc(len);
+		newMp3->title =  malloc(len);
 		strcpy(newMp3->title, buffer);
 	}
-	
 
 	
 	printf("Who is the artist of the MP3?\n");
@@ -89,8 +83,7 @@ void addMp3(mp3_t* newMp3) {
 
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
-		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
-		newMp3->artist = (char *) malloc(len);
+		newMp3->artist =  malloc(len);
 		strcpy(newMp3->artist, buffer);
 	}
 	
@@ -99,36 +92,31 @@ void addMp3(mp3_t* newMp3) {
 	
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
-		newMp3 = (mp3_t *) malloc(sizeof(newMp3->date));
-		newMp3->date = (char *) malloc(len);
+		newMp3->date =  malloc(len);
 		strcpy(newMp3->date, buffer);
 	
 	}	
 	
-	printf("%s\n", newMp3->title);
 
 
 	printf("How long is the song in seconds?\n");
-//	scanf("%o", &newMp3->runTime);
 
 	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
-	//	int *newMp3Pt = &newMp3->runTime
 		char *holder;
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
-		newMp3 = (mp3_t *) malloc(sizeof(mp3_t));
-		holder = (char *) malloc(len);
-		//newMp3->runTime = *buffer;
+		holder =  malloc(len);
 		strcpy(holder, buffer);
 		newMp3->runTime = atoi(buffer);		
 	}
-		printf("Title: %s\n", newMp3->title);
-		printf("Artist: %s\n", newMp3->artist);
-		printf("Date: %s\n", newMp3->date);
-		printf("runTime: %d\n\n\n\n", newMp3->runTime);
-
 
 		
+	if(head == NULL) {
+		newMp3->prev = NULL;
+		newMp3->next = NULL;
+		head = newMp3;
+	}
+
 
 
 	else {
@@ -154,15 +142,26 @@ void addMp3(mp3_t* newMp3) {
 
 void deleteMp3() {
 
-	mp3_t *temp = head;
+	memset(buffer, 0, sizeof(buffer));	
+
+
+	mp3_t *temp = malloc(sizeof(mp3_t));
+	temp->title = malloc(sizeof(char));
+	temp = head;
 
 	char *deletedMp3;
 
 	printf("Enter the title of the song you would like to delete\n");
-	scanf("%s", deletedMp3);
+	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+		len = (int) strlen(buffer);
+		buffer[len - 1] = '\0';
+		deletedMp3 = malloc(len);
+		strcpy(deletedMp3, buffer);
+	}
 
-	while(temp->title != deletedMp3) {
-		if (temp->next != NULL) {	
+	printf("%s\n", temp->title);
+		while(temp->title != deletedMp3) {
+			if (temp->next != NULL) {	
 			temp = temp->next;
 		}
 
@@ -171,8 +170,8 @@ void deleteMp3() {
 			break;
 		}
 	}
-
-	free(temp);
+printf("hi\n");
+//	free(temp);
 
 	
 	/*if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
@@ -195,6 +194,12 @@ void printBtoE() {
 	mp3_t* temp = (mp3_t *)malloc(sizeof(mp3_t));
 
 	temp = head;
+	
+	printf("\n\n\n\n");
+
+	printf("Printing from beginning to end of list");
+
+	printf("\n\n\n\n");
 
 	while(temp->next != NULL) {
 		printf("Title: %s\n", temp->title);
@@ -213,6 +218,36 @@ void printBtoE() {
 
 
 void printEtoB() {
+
+	mp3_t* temp = (mp3_t *)malloc(sizeof(mp3_t));
+
+	temp = head;
+	
+	printf("\n\n\n\n");
+
+	printf("Printing from end to beginning of list");
+
+	printf("\n\n\n\n");
+
+
+	while(temp->next != NULL) {
+		temp = temp->next;
+	}
+	
+	while(temp->prev != NULL) {
+		printf("Title: %s\n", temp->title);
+		printf("Artist: %s\n", temp->artist);
+		printf("Date: %s\n", temp->date);
+		printf("runTime: %d\n\n\n\n", temp->runTime);
+		temp = temp->prev;	
+	}
+	
+		printf("Title: %s\n", temp->title);
+		printf("Artist: %s\n", temp->artist);
+		printf("Date: %s\n", temp->date);
+		printf("runTime: %d\n", temp->runTime);
+
+
 
 
 

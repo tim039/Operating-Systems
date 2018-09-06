@@ -15,7 +15,7 @@ typedef struct mp3 {
 
 
 
-void addMp3(mp3_t* newMp3);
+void addMp3();
 
 void deleteMp3();
 
