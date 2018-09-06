@@ -26,7 +26,7 @@ int counter = 0;
 
 
 int main() {
-/*
+
 
 	char adding = 'y';
 
@@ -43,9 +43,9 @@ int main() {
 
 	printf("Your MP3's have been added\n");
 
-*///	printBtoE();
+	printBtoE();
 	deleteMp3();
-//	printEtoB();
+	printEtoB();
 }
 
 
@@ -135,8 +135,12 @@ void addMp3() {
 
 	}
 
-	//	free(newMp3);
-
+//		free(newMp3->title);
+//		free(newMp3->artist);
+//		free(newMp3->date);
+	//	free(holder);
+//		free(newMp3);
+		
 }
 
 
@@ -145,44 +149,52 @@ void deleteMp3() {
 	memset(buffer, 0, sizeof(buffer));	
 
 
-	mp3_t *temp = malloc(sizeof(mp3_t));
-	temp->title = malloc(sizeof(char));
-	temp = head;
+	mp3_t *temp = head;
+
+//	temp->title = malloc(sizeof(temp->title));
+
 
 	char *deletedMp3;
+	
+		if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+		}
+	
+	
 
 	printf("Enter the title of the song you would like to delete\n");
-	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+	if(fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+	
 		len = (int) strlen(buffer);
 		buffer[len - 1] = '\0';
-		deletedMp3 = malloc(len);
+		deletedMp3 =  malloc(len);
 		strcpy(deletedMp3, buffer);
-	}
+	}	
 
-	printf("%s\n", temp->title);
-		while(temp->title != deletedMp3) {
-			if (temp->next != NULL) {	
+	
+	while(strcmp(temp->title, deletedMp3) != 0) {
+
+		if (temp->next != NULL) {	
 			temp = temp->next;
+	
 		}
 
 		else {
+	
 			printf("Mp3 not found\n");
-			break;
+				break;
 		}
 	}
-printf("hi\n");
-//	free(temp);
+
+	mp3_t *tempNext = temp->next;
+	mp3_t *tempPrev = temp->prev;
+	
+	tempPrev->next = tempNext;
+	tempNext->prev = tempPrev;
+
+	free(temp); 
 
 	
-	/*if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 
-		len = (int) strlen(buffer);
-		buffer[len - 1] = '\0';
-		deletedMp3 = (mp3_t *) malloc(sizeof(mp3_t));
-		deletedMp3->title = (char *) malloc(len);
-		strcpy(newMp3->title, buffer);
-	}
-*/
 
 
 
