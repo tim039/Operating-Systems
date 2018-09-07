@@ -1,7 +1,7 @@
 /*mp3.c
 By: Timothy Louie
 Written:9/1/2018
-Updated9/7/2018 
+Updated:9/7/2018 
 Mp3.c allows users to add and delete mp3's from a list
 */
 

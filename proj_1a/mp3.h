@@ -1,4 +1,9 @@
-
+/*mp3.h
+By: Timothy Louie
+written: 9/1/2018
+Updated: 9/7/2018
+Mp3.h is the header file for mp3.c
+*/
 #ifndef mp3_h
 #define mp3_h
 #define BUFFERSIZE 128
