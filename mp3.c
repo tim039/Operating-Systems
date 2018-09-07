@@ -185,11 +185,28 @@ void deleteMp3() {
 		}
 	}
 
-	mp3_t *tempNext = temp->next;
-	mp3_t *tempPrev = temp->prev;
+	//first in list
+	if(temp->prev == NULL && temp->next != NULL) {
+		(temp->next)->prev = NULL;	
+	}	
 	
-	tempPrev->next = tempNext;
-	tempNext->prev = tempPrev;
+	else if(temp->prev == NULL && temp->next == NULL) {
+		temp = NULL;
+		head = NULL;
+			
+	}
+	
+	else if(temp->prev != NULL && temp->next == NULL) {
+		(temp->prev)->next = NULL;
+	}
+
+	else {
+		mp3_t *tempNext = temp->next;
+		mp3_t *tempPrev = temp->prev;
+	
+		tempPrev->next = tempNext;
+		tempNext->prev = tempPrev;
+	}
 
 	free(temp); 
 
@@ -203,6 +220,7 @@ void deleteMp3() {
 
 void printBtoE() {
 
+	if(head != NULL) {
 	mp3_t* temp = (mp3_t *)malloc(sizeof(mp3_t));
 
 	temp = head;
@@ -224,12 +242,21 @@ void printBtoE() {
 		printf("Artist: %s\n", temp->artist);
 		printf("Date: %s\n", temp->date);
 		printf("runTime: %d\n", temp->runTime);
+		printf("\n\n\n\n");
+	}
 
+	else {
+
+		printf("list is empty\n");
+
+	}
 
 }
 
 
 void printEtoB() {
+
+	if(head != NULL) {
 
 	mp3_t* temp = (mp3_t *)malloc(sizeof(mp3_t));
 
@@ -258,9 +285,13 @@ void printEtoB() {
 		printf("Artist: %s\n", temp->artist);
 		printf("Date: %s\n", temp->date);
 		printf("runTime: %d\n", temp->runTime);
+		printf("\n\n\n\n");
+	}
 
+	else {
 
-
+		printf("list is empty\n");
+}
 
 
 }
