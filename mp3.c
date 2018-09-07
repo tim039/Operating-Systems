@@ -1,3 +1,11 @@
+/*mp3.c
+By: Timothy Louie
+Written:9/1/2018
+Updated9/7/2018 
+Mp3.c allows users to add and delete mp3's from a list
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,16 +13,7 @@
 
 
 
-/*typedef struct mp3 {
 
-	char* artist;
-	char* title;
-	char* date;
-	int runTime;
-	struct mp3 * next;
-	struct mp3 * prev;
-}mp3_t;
-*/
 
 mp3_t *head = NULL;
 
@@ -28,15 +27,15 @@ int counter = 0;
 int main() {
 
 
-	char adding = 'y';
+	char changing = 'y';
 
-	while(adding == 'y') {
+	while(changing == 'y') {
 	counter++;
 
 		addMp3();
 	
 		printf("Do you have another MP3 to add? (y/n) \n");
-		scanf("%c", &adding);
+		scanf("%c", &changing);
 
 
 	}
@@ -44,14 +43,23 @@ int main() {
 	printf("Your MP3's have been added\n");
 
 	printBtoE();
-	deleteMp3();
+
+	changing = 'y';
+	
+	while(changing == 'y') {
+	
+		deleteMp3();
+		printf("Do you have another MP3 to delete? (y/n)\n");
+		scanf("%c", &changing);
+
+	}
 	printEtoB();
 }
 
 
 
 
-
+/* This function allows users to add an mp3 to the list*/
 void addMp3() {	
 
 	mp3_t* newMp3 =malloc(sizeof(mp3_t));
@@ -94,7 +102,6 @@ void addMp3() {
 		buffer[len - 1] = '\0';
 		newMp3->date =  malloc(len);
 		strcpy(newMp3->date, buffer);
-	
 	}	
 	
 
@@ -107,10 +114,11 @@ void addMp3() {
 		buffer[len - 1] = '\0';
 		holder =  malloc(len);
 		strcpy(holder, buffer);
-		newMp3->runTime = atoi(buffer);		
+		newMp3->runTime = atoi(buffer);
+//		free(holder);		
 	}
 
-		
+	//sets new mp3 to head if list is empty	
 	if(head == NULL) {
 		newMp3->prev = NULL;
 		newMp3->next = NULL;
@@ -118,7 +126,7 @@ void addMp3() {
 	}
 
 
-
+	//sets next and prev for newMp3
 	else {
 	
 		mp3_t *temp = head;
@@ -134,25 +142,16 @@ void addMp3() {
 		temp->next = newMp3;// CHECK
 
 	}
-
-//		free(newMp3->title);
-//		free(newMp3->artist);
-//		free(newMp3->date);
-	//	free(holder);
-//		free(newMp3);
-		
+	
 }
 
-
+/*This function allows users to delete mp3's from the list*/
 void deleteMp3() {
 
 	memset(buffer, 0, sizeof(buffer));	
 
 
 	mp3_t *temp = head;
-
-//	temp->title = malloc(sizeof(temp->title));
-
 
 	char *deletedMp3;
 	
@@ -201,14 +200,14 @@ void deleteMp3() {
 	}
 
 	else {
-		mp3_t *tempNext = temp->next;
-		mp3_t *tempPrev = temp->prev;
-	
-		tempPrev->next = tempNext;
-		tempNext->prev = tempPrev;
+
+		(temp->prev)->next = temp->next;
+		(temp->next)->prev = temp->prev;
 	}
 
-	free(temp); 
+	
+	free(deletedMp3);
+ 
 
 	
 
@@ -217,7 +216,7 @@ void deleteMp3() {
 
 }
 
-
+/*allows users to print their list of mp3's from beginning to end*/
 void printBtoE() {
 
 	if(head != NULL) {
@@ -243,6 +242,9 @@ void printBtoE() {
 		printf("Date: %s\n", temp->date);
 		printf("runTime: %d\n", temp->runTime);
 		printf("\n\n\n\n");
+
+
+		free(temp);
 	}
 
 	else {
@@ -251,9 +253,11 @@ void printBtoE() {
 
 	}
 
+
+
 }
 
-
+/*allows users to print their list of mp3's from end to beginning*/
 void printEtoB() {
 
 	if(head != NULL) {
@@ -286,13 +290,14 @@ void printEtoB() {
 		printf("Date: %s\n", temp->date);
 		printf("runTime: %d\n", temp->runTime);
 		printf("\n\n\n\n");
+
+		free(temp);
 	}
 
 	else {
 
 		printf("list is empty\n");
 }
-
 
 }
 
