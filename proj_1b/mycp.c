@@ -1,43 +1,62 @@
 #include "mycp.h"
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
 
-char buffer[128];
+
+char buffer[BUFFERSIZE];
 int len;
-
-int main() {
-
-	char *fileName1;
-	char *fileName2;
+size_t bytes;
 	
 
-	printf("Enter the name of the first file: \n");
-	if (fgets(buffer, 128, stdin) != NULL) {
-		len = (int) strlen(buffer);
-		buffer[len - 1] = '\0';
-		fileName1 = malloc(len);
-		strcpy(fileName1, buffer);
+char *fileName1;
+char *fileName2;
 
+char c;
+
+int fileRead;
+int file1;
+int file2;
+
+int main(int argc, char **argv) {
+
+	if(argv[2] == NULL || argv[1] == NULL) {
+		perror("missing file(s)\n");
+		return 0;
+	}
+	
+	copy(argv[1], argv[2]);
+
+
+	return 0;
+}
+
+
+
+void copy(char* fileName1, char *fileName2) {
+	
+	file1 = open(fileName1, O_RDONLY);
+
+	if(file1 == -1) {
+		perror("Error opening file 1\n");
+		return;
 	}
 
+	file2 = open(fileName2, O_WRONLY);
 
-	printf("Enter the name of the second file: \n");
-	if (fgets(buffer, 128, stdin) != NULL) {
-		len = (int) strlen(buffer);
-		buffer[len - 1] = '\0';
-		fileName2 = malloc(len);
-		strcpy(fileName2, buffer);
+	if(file2 == -1) {
+		file2 = open(fileName2, O_WRONLY | O_RDONLY | O_CREAT, S_IWOTH | S_IROTH);
 	}
 
+	fileRead = read(file1, buffer, BUFFERSIZE);
+	
+	write(file2 ,buffer, BUFFERSIZE);
 
-
-	printf("%s\n", fileName1);
-	printf("%s\n", fileName2);
-
-	free(fileName1);
-	free(fileName2);
-
+	close(file1);
+	close(file2);	
 
 }
+
 
