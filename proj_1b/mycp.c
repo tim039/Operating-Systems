@@ -47,7 +47,7 @@ void copy(char* fileName1, char *fileName2) {
 	file2 = open(fileName2, O_WRONLY);
 
 	if(file2 == -1) {
-		file2 = open(fileName2, O_WRONLY | O_RDONLY | O_CREAT, S_IWOTH | S_IROTH);
+		file2 = open(fileName2, O_CREAT | O_RDWR, 0644);
 	}
 
 	fileRead = read(file1, buffer, BUFFERSIZE);
