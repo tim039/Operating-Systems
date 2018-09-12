@@ -20,13 +20,17 @@ int fileRead;
 int file1;
 int file2;
 
-int main(int argc, char **argv) {
 
+
+int main(int argc, char **argv) {
+	const char *error = NULL;
+	printf("%s\n", error[0]);
+	
 	if(argv[2] == NULL || argv[1] == NULL) {
 		perror("missing file(s)\n");
 		return 0;
 	}
-	
+
 	copy(argv[1], argv[2]);
 
 
@@ -48,6 +52,12 @@ void copy(char* fileName1, char *fileName2) {
 
 	if(file2 == -1) {
 		file2 = open(fileName2, O_CREAT | O_RDWR, 0644);
+	}
+
+	else {
+		printf("Would you like to overwrite %s?\n", fileName2);
+ 
+		
 	}
 
 	fileRead = read(file1, buffer, BUFFERSIZE);
