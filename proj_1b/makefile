@@ -1,7 +1,7 @@
 
 
 CC=gcc
-CFLAGS=-I
+#CFLAGS=-I
 DEPS=mycp.h
 
 %.o: %.c $(DEPS)

@@ -1,6 +1,5 @@
 #include "mycp.h"
 #include <stdio.h>
-//#include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -9,7 +8,7 @@
 char buffer[BUFFERSIZE];
 int len;
 size_t bytes;
-	
+char command[50];	
 
 char *fileName1;
 char *fileName2;
@@ -23,9 +22,7 @@ int file2;
 
 
 int main(int argc, char **argv) {
-	const char *error = NULL;
-	printf("%s\n", error[0]);
-	
+
 	if(argv[2] == NULL || argv[1] == NULL) {
 		perror("missing file(s)\n");
 		return 0;
@@ -40,7 +37,7 @@ int main(int argc, char **argv) {
 
 
 void copy(char* fileName1, char *fileName2) {
-	
+
 	file1 = open(fileName1, O_RDONLY);
 
 	if(file1 == -1) {
@@ -55,10 +52,11 @@ void copy(char* fileName1, char *fileName2) {
 	}
 
 	else {
-		printf("Would you like to overwrite %s?\n", fileName2);
- 
-		
+	
+			execlp("cp","cp", "-i", fileName1, fileName2, NULL);
+			
 	}
+	
 
 	fileRead = read(file1, buffer, BUFFERSIZE);
 	
