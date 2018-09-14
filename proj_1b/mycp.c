@@ -1,3 +1,10 @@
+/*mycp.c
+By: Timothy Louie
+Written:9/10/2018
+Updated: 9/14/2018
+mycp.c copies an input file to an output file
+*/
+
 #include "mycp.h"
 #include <stdio.h>
 #include <string.h>
@@ -41,7 +48,7 @@ int main(int argc, char **argv) {
 }
 
 
-
+/*this function copies the contents of the first argument to the second argument*/
 void copy(char* fileName1, char *fileName2) {
 
 	file1 = open(fileName1, O_RDONLY);
