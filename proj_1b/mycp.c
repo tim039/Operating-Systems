@@ -28,6 +28,12 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 
+	else if(argv[3] != NULL) {
+		perror("too many files!\n");
+		return 0;
+
+	}
+
 	copy(argv[1], argv[2]);
 
 
