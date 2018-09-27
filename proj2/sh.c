@@ -11,6 +11,7 @@
 #include <signal.h>
 #include "sh.h"
 
+
 int sh( int argc, char **argv, char **envp ){  
 
   char buffer[BUFFERSIZE];
@@ -21,10 +22,14 @@ int sh( int argc, char **argv, char **envp ){
   char *command, *arg, *commandpath, *p, *pwd, *owd;
   char **args = calloc(MAXARGS, sizeof(char*));
   int uid, i, status, argsct, go = 1;
+  int j;
+  int numPaths;
   struct passwd *password_entry;
   char *homedir;
   struct pathelement *pathlist;
-
+ // char ** arguments =  calloc(MAXARGS, sizeof(char*));
+  char **path = calloc(MAXARGS, sizeof(char*));
+  char* cmdpath = calloc(PROMPTMAX, sizeof(char));
 
   uid = getuid();			//user IDq
   password_entry = getpwuid(uid);      /* get passwd info (struct with user info */
@@ -46,6 +51,18 @@ int sh( int argc, char **argv, char **envp ){
 
   /* Put PATH into a linked list */
   pathlist = get_path();
+  struct pathelement *temp = pathlist;
+
+  /* putting pathlist into a char* const*/
+
+
+  for(j = 0; temp->next != NULL; j++) {
+
+	path[j] = temp->element;
+	temp = temp->next; 
+ }
+path[j] = NULL;
+numPaths = j - 1;
 
   while ( go )
   {
@@ -61,36 +78,66 @@ int sh( int argc, char **argv, char **envp ){
 	if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
 		len = (int) strlen(buffer);
 		buffer[len-1] = '\0';	
-		command = (char *) malloc(len);
-		strcpy(command, buffer);
+	//	command = (char *) malloc(len);
+		strcpy(commandline, buffer);
 	}
 	 
 
 	char * exit = "exit";
 	
-	if (strcmp(command, exit) == 0) {
+	if (strcmp(commandline, exit) == 0) {
 		break;
 	}
 	
-	int totalNumArgs = 5;
-	int numArgs = 0;
-///	char **args = (char **) malloc(sizeof(char **));	
 	
 
-	for(int i = 0, j = 0; i < len; i++) {
-		if(command[i] != ' ') {
-			(args[numArgs])[j] = command[i];
-			j++;
-		} 
+	const char delim[2] = " ";
+	char *token;
+
+	token = strtok(commandline, delim);
+
+	for(j = 0; j < numPaths; j++) {
+	
+		size_t len1 = strlen(path[j]), len2 = strlen("/"), len3 = strlen(token);
+		char *concat1 = malloc(len1 + len2 + 1);
+		char *concat2 = malloc(len1 + len2 + len3 + 1);
 		
-		else {
-			i++;
-			j = 0;
-			numArgs++;
+		memcpy(concat1, path[j], len1);
+		memcpy(concat1 + len1, "/", len2 + 1);
+
+		memcpy(concat2, concat1, len1 + len2);
+		memcpy(concat2 + len1 + len2, token, len3 + 1);		
+		
+		if(access(concat2, X_OK) == 0) {
+
+			cmdpath = concat2;			
+			break;
 		}
+
+		free(concat1);
+		free(concat2);
 	}
 
-		execv(args[0], args);
+
+	args[0] = token; 			//args[0] should be path to command
+
+	for(j=1; token != NULL; j++) {
+	
+		token = strtok(NULL, delim);
+		args[j] = token;
+	}
+	args[j] = NULL;	
+
+	if(execve(cmdpath, args, path) == -1) {// ;
+
+		printf("failed");
+
+	}
+
+	else {
+		printf("works");
+	}
+	//	execve(arguments[0],arguments);
 
      /*  else  program to exec */
    // {
@@ -101,11 +148,13 @@ int sh( int argc, char **argv, char **envp ){
         fprintf(stderr, "%s: Command not found.\n", args[0]);
     }*/
   }
-	free(command);
+	free(cmdpath);
 	free(args);
 	free(prompt);
 	free(commandline);
 	free(owd);
+	//free(arguments);
+	free(path);
 
 
  	return 0;
@@ -116,6 +165,9 @@ char *which(char *command, struct pathelement *pathlist )
 {
    /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
+
+	
+
 
 } /* which() */
 
