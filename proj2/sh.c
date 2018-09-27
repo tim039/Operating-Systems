@@ -30,7 +30,6 @@ int sh( int argc, char **argv, char **envp ){
  // char ** arguments =  calloc(MAXARGS, sizeof(char*));
   char **path = calloc(MAXARGS, sizeof(char*));
  // char* cmdpath = calloc(PROMPTMAX, sizeof(char));
-
   uid = getuid();			//user IDq
   password_entry = getpwuid(uid);      /* get passwd info (struct with user info */
   homedir = password_entry->pw_dir;		/* Home directory to start
@@ -89,7 +88,6 @@ int sh( int argc, char **argv, char **envp ){
  
 
 	char * exit = "exit";
-	
 	if (strcmp(commandline, exit) == 0) {
 		break;
 	}
@@ -100,8 +98,8 @@ int sh( int argc, char **argv, char **envp ){
 	char *token;
 
 	token = strtok(commandline, delim);
-	args[0] = which(token,path,numPaths); 		
-
+//	args[0] = which(token,path,numPaths); 		
+	args[0] = token;
 
 	for(j=1; token != NULL; j++) {
 	
@@ -110,16 +108,20 @@ int sh( int argc, char **argv, char **envp ){
 	}
 	args[j] = NULL;	
 
-	if(execve(args[0], args, path) == -1) {// ;
 
-		printf("failed");
-
+	if(strcmp(args[0], "where") == 0) {
+		where(args[1], pathlist);
+	}
+	
+	else if(strcmp(args[0], "which") == 0) {
+		printf("%s\n", which(args[1], pathlist));
 	}
 
 	else {
-		printf("works");
+
+	execve(which(args[0],pathlist), args, path);
+
 	}
-	//	execve(arguments[0],arguments);
 
      /*  else  program to exec */
    // {
@@ -143,16 +145,64 @@ int sh( int argc, char **argv, char **envp ){
 } /* sh() */
 
 
-char *which(char *command, char **path,int numPaths)
+char *which(char *command, struct pathelement *pathlist)
 {
    /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
 
 	char *cmdpath;
+	struct pathelement *temp = pathlist;
+	int numPaths;
+	char **path = calloc(MAXARGS, sizeof(char*));
+	int i;
+
+	for(i = 0; temp->next != NULL; i++) {
+
+		path[i] = temp->element;
+		temp = temp->next; 
+ 
+	}
+ 	numPaths = i;
+
+	for(int j = 0; j < numPaths; j++) {
+	
+		size_t len1 = strlen(path[j]), len2 = strlen("/"), len3 = strlen(command);
+		char *concat1 = malloc(len1 + len2 + 1);
+		char *concat2 = malloc(len1 + len2 + len3 + 1);
+		
+		memcpy(concat1, path[j], len1);
+		memcpy(concat1 + len1, "/", len2 + 1);
+	
+		memcpy(concat2, concat1, len1 + len2);
+		memcpy(concat2 + len1 + len2, command, len3 + 1);		
+	
+		if(access(concat2, X_OK) == 0) {
+
+			cmdpath = concat2;			
+			break;
+		}
+
+		free(concat1);
+		free(concat2);
+	}
+
+	if(cmdpath != NULL) {
+		return cmdpath;
+	}
+	else {
+		return NULL;
+	}
+
+} /* which() */
+
+char *where(char *command, struct pathelement *pathlist)
+{
+  /* similarly loop through finding all locations of command */
+ /* where() */
+/*
+		char *cmdpath;
 
       
-
-
 		for(int j = 0; j < numPaths; j++) {
 	
 		size_t len1 = strlen(path[j]), len2 = strlen("/"), len3 = strlen(command);
@@ -167,24 +217,18 @@ char *which(char *command, char **path,int numPaths)
 		
 		if(access(concat2, X_OK) == 0) {
 
-			cmdpath = concat2;			
-			break;
+			printf("%s\n", concat2);
 		}
 
 		free(concat1);
 		free(concat2);
-	}
 
+		return;
 
-	return cmdpath;
+		}
+*/
 
-} /* which() */
-
-char *where(char *command, struct pathelement *pathlist )
-{
-  /* similarly loop through finding all locations of command */
-} /* where() */
-
+}
 void list ( char *dir )
 {
   /* see man page for opendir() and readdir() and print out filenames for
