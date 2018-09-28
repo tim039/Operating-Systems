@@ -64,7 +64,7 @@ int sh( int argc, char **argv, char **envp ){
  numPaths = j - 1;
 
 
-  while ( go )
+  while ( go == 1 )
   {
     /* print your prompt */
 
@@ -87,8 +87,8 @@ int sh( int argc, char **argv, char **envp ){
     /* check for each built in command and implement */
  
 
-	char * exit = "exit";
-	if (strcmp(commandline, exit) == 0) {
+	char * exitStatus = "exit";
+	if (strcmp(commandline, exitStatus) == 0) {
 		break;
 	}
 	
@@ -118,8 +118,23 @@ int sh( int argc, char **argv, char **envp ){
 	}
 
 	else {
+	
+		pid_t childpid = fork();
+	
+		if(childpid == -1) {
+			printf("can't fork\n");
+			exit(EXIT_FAILURE);
+		}
+	
+		else if(childpid == 0) {
+			execve(which(args[0],pathlist), args, path); 
+			exit(0);
+		}
+		
+		else {
 
-	execve(which(args[0],pathlist), args, path);
+			waitpid(childpid, &status, 0);
+		}
 
 	}
 
@@ -131,7 +146,7 @@ int sh( int argc, char **argv, char **envp ){
 /*      else
         fprintf(stderr, "%s: Command not found.\n", args[0]);
     }*/
-  }
+}  
 //	free(cmdpath);
 	free(args);
 	free(prompt);
