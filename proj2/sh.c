@@ -110,13 +110,72 @@ int sh( int argc, char **argv, char **envp ){
 
 
 	if(strcmp(args[0], "where") == 0) {
-		where(args[1], pathlist);
+		printf("%s\n", where(args[1], pathlist));
+	
 	}
 	
 	else if(strcmp(args[0], "which") == 0) {
 		printf("%s\n", which(args[1], pathlist));
 	}
 
+	else if(strcmp(args[0], "cd") == 0) {
+		char *directory = args[1];
+		int ret;
+		ret = chdir(directory);
+		
+		if((owd = getcwd(NULL, PATH_MAX+1)) == NULL) {
+			perror("getcwd");
+			exit(2);
+		}
+
+		// - returns to prev directory
+
+	}
+
+	else if(strcmp(args[0], "pwd") == 0) {
+		printf("%s\n", getcwd(NULL, PATH_MAX+1));
+	}
+
+
+	else if(strcmp(args[0], "list") == 0) {
+//		list();
+	}
+
+/*
+	else if(strcmp(args[0], "pid") == 0) {
+		pid();
+	}
+
+
+	else if(strcmp(args[0], "kill") == 0) {
+		kill();
+	}
+
+	
+	else if(strcmp(args[0], "prompt") == 0) {
+		prompt();
+	}
+
+	
+	else if(strcmp(args[0], "printenv") == 0) {
+		printenv();
+	}
+
+
+	else if(strcmp(args[0], "alias") == 0) {
+		alias();
+	}
+
+
+	else if(strcmp(args[0], "history") == 0) {
+		history();
+	}
+
+
+	else if(strcmp(args[0], "setenv") == 0) {
+		setenv();
+	}
+	*/
 	else {
 	
 		pid_t childpid = fork();
@@ -200,7 +259,8 @@ char *which(char *command, struct pathelement *pathlist)
 		free(concat1);
 		free(concat2);
 	}
-
+	free(path);
+	
 	if(cmdpath != NULL) {
 		return cmdpath;
 	}
@@ -214,39 +274,79 @@ char *where(char *command, struct pathelement *pathlist)
 {
   /* similarly loop through finding all locations of command */
  /* where() */
-/*
-		char *cmdpath;
 
-      
-		for(int j = 0; j < numPaths; j++) {
+	char **cmdpath = calloc(MAXARGS, sizeof(char*));
+	struct pathelement *temp = pathlist;
+	int numPaths;
+	char **path = calloc(MAXARGS, sizeof(char*));
+	int i;
+	int size = 0;
+	char* allPaths = calloc(MAXARGS, sizeof(char));;	
+
+
+	for(i = 0; temp->next != NULL; i++) {
+
+		path[i] = temp->element;
+		temp = temp->next; 
+ 
+	}
+ 	numPaths = i;
+
+	
+	for(int j = 0, k = 0; j < numPaths; j++) {
 	
 		size_t len1 = strlen(path[j]), len2 = strlen("/"), len3 = strlen(command);
 		char *concat1 = malloc(len1 + len2 + 1);
 		char *concat2 = malloc(len1 + len2 + len3 + 1);
-		
+			
+	
 		memcpy(concat1, path[j], len1);
 		memcpy(concat1 + len1, "/", len2 + 1);
-
+	
 		memcpy(concat2, concat1, len1 + len2);
 		memcpy(concat2 + len1 + len2, command, len3 + 1);		
-		
+	
 		if(access(concat2, X_OK) == 0) {
+			size_t catLen = strlen(concat2), colonLen = strlen(":"), allPathsLen = strlen(allPaths);
+			char *concat3 = malloc(catLen + colonLen + 1);
+			
+			memcpy(concat3, concat2, catLen);
+			memcpy(concat3 + catLen,":",colonLen + 1);
+			
+			memcpy(allPaths + allPathsLen, concat3, catLen + colonLen + 1);
 
-			printf("%s\n", concat2);
+			k++;
+			
 		}
+	
+//		free(concat1);
+//		free(concat2);
+	}
+		
+		free(path);
 
-		free(concat1);
-		free(concat2);
-
-		return;
-
-		}
-*/
+		return allPaths;
 
 }
+
+
+
+
 void list ( char *dir )
 {
   /* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
+
+	
+
+
+
 } /* list() */
+
+
+
+
+
+
+
 
