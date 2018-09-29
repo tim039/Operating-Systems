@@ -138,20 +138,25 @@ int sh( int argc, char **argv, char **envp ){
 
 
 	else if(strcmp(args[0], "list") == 0) {
-//		list();
+		list(args[1]);
 	}
 
-/*
+
 	else if(strcmp(args[0], "pid") == 0) {
-		pid();
+		printf("PID: %d\n", getpid());
 	}
 
 
 	else if(strcmp(args[0], "kill") == 0) {
-		kill();
+		if (args[1][0] == '-') {
+			kill(args[2], args[1]);
+		}
+		else {
+			kill(args[2], 0);
+		}
 	}
 
-	
+/*	
 	else if(strcmp(args[0], "prompt") == 0) {
 		prompt();
 	}
@@ -337,8 +342,26 @@ void list ( char *dir )
   /* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
 
-	
+	if(dir == NULL) {
+		dir = ".";
+	}
 
+	DIR *directory;	
+	directory = opendir(dir);
+	struct dirent *dp;	
+
+	if(directory == NULL) {
+		perror("Error! Unable to open directory. \n");
+	//	exit(1);
+		return;
+	}
+
+	while((dp=readdir(directory)) != NULL) {
+		
+		printf("%s\n", dp->d_name);
+	}	
+	
+	closedir(directory);
 
 
 } /* list() */
