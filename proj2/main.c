@@ -8,7 +8,6 @@
 void sig_handler(int signal); 
 //char *concatenate(size_t size, char *array[size], const char *joint);
 
-
 int main( int argc, char **argv, char **envp )
 {
   /* put signal set up stuff here */

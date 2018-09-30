@@ -12,6 +12,8 @@
 #include "sh.h"
 
 
+extern char **environ;
+
 int sh( int argc, char **argv, char **envp ){  
 
   char buffer[BUFFERSIZE];
@@ -21,15 +23,15 @@ int sh( int argc, char **argv, char **envp ){
   char *commandline = calloc(MAX_CANON, sizeof(char));
   char *command, *arg, *commandpath, *p, *pwd, *owd;
   char **args = calloc(MAXARGS, sizeof(char*));
-  int uid, i, status, argsct, go = 1;
+  int uid, i, status, argsct, promptTrue, go = 1;
   int j;
   int numPaths;
   struct passwd *password_entry;
   char *homedir;
   struct pathelement *pathlist;
- // char ** arguments =  calloc(MAXARGS, sizeof(char*));
+  char *prefix = calloc(PROMPTMAX, sizeof(char));
   char **path = calloc(MAXARGS, sizeof(char*));
- // char* cmdpath = calloc(PROMPTMAX, sizeof(char));
+
   uid = getuid();			//user IDq
   password_entry = getpwuid(uid);      /* get passwd info (struct with user info */
   homedir = password_entry->pw_dir;		/* Home directory to start
@@ -67,9 +69,11 @@ int sh( int argc, char **argv, char **envp ){
   while ( go == 1 )
   {
     /* print your prompt */
+	if(promptTrue == 0) {
+		printf("%s ", prefix);
+	}
 
-
-	printf(" %s", owd);
+	printf("[%s]", owd);
 	printf("> ");
 
 
@@ -149,24 +153,55 @@ int sh( int argc, char **argv, char **envp ){
 
 	else if(strcmp(args[0], "kill") == 0) {
 		if (args[1][0] == '-') {
-			kill(args[2], args[1]);
+			int sig = args[1][1] - '0';
+			kill((pid_t)atoi(args[2]),sig);
 		}
 		else {
-			kill(args[2], 0);
+			kill((pid_t)atoi(args[1]), SIGTERM);
+
 		}
 	}
 
-/*	
+	
 	else if(strcmp(args[0], "prompt") == 0) {
-		prompt();
+		promptTrue = 0;
+		
+		if(args[1] == NULL) {
+			printf("intput prompt prefix: ");
+			
+			if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+				len = (int) strlen(buffer);
+				buffer[len-1] = '\0';	
+				strcpy(prefix, buffer);
+			}
+	
+		}
+
+		else {
+			prefix = args[1];
+		}
 	}
 
 	
 	else if(strcmp(args[0], "printenv") == 0) {
-		printenv();
+		if(args[1] == NULL) {
+			
+			int z = 1;
+			char *s = *environ;
+
+			for (; s; z++) {
+			    printf("%s\n", s);
+			    s = *(environ+z);
+
+			}	
+		}	
+
+		else {
+			printf("%s\n", getenv(args[1]));
+		}
 	}
 
-
+/*
 	else if(strcmp(args[0], "alias") == 0) {
 		alias();
 	}
@@ -216,7 +251,7 @@ int sh( int argc, char **argv, char **envp ){
 	free(prompt);
 	free(commandline);
 	free(owd);
-	//free(arguments);
+//	free(prefix);
 	free(path);
 
 
