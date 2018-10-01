@@ -31,6 +31,10 @@ int sh( int argc, char **argv, char **envp ){
   struct pathelement *pathlist;
   char *prefix = calloc(PROMPTMAX, sizeof(char));
   char **path = calloc(MAXARGS, sizeof(char*));
+  char **alias = calloc(MAXARGS, sizeof(char*));
+  char **aliasEqual = calloc(MAXARGS, sizeof(char*));
+ // char **history = calloc(MAXARGS, sizeof(char*));
+  int numAlias=0;//, histCounter = 0;
 
   uid = getuid();			//user IDq
   password_entry = getpwuid(uid);      /* get passwd info (struct with user info */
@@ -87,7 +91,10 @@ int sh( int argc, char **argv, char **envp ){
 		strcpy(commandline, buffer);
 	}
 	
-
+/*	history[histCounter] = commandline;
+	histCounter++;
+	printf("%s\n", history[histCounter]);
+*/
     /* check for each built in command and implement */
  
 
@@ -102,8 +109,23 @@ int sh( int argc, char **argv, char **envp ){
 	char *token;
 
 	token = strtok(commandline, delim);
-//	args[0] = which(token,path,numPaths); 		
-	args[0] = token;
+
+	if(numAlias == 0) {	
+		args[0] = token;
+	}
+	else {
+	for(int a = 0; a < numAlias; a++) {
+		if(strcmp(alias[a], token) == 0) {
+	
+			args[0] = aliasEqual[a];
+		}
+		else {
+			args[0] = token;	
+		
+		}
+	}
+	}
+
 
 	for(j=1; token != NULL; j++) {
 	
@@ -111,6 +133,7 @@ int sh( int argc, char **argv, char **envp ){
 		args[j] = token;
 	}
 	args[j] = NULL;	
+
 
 
 	if(strcmp(args[0], "where") == 0) {
@@ -201,18 +224,30 @@ int sh( int argc, char **argv, char **envp ){
 		}
 	}
 
-/*
+
 	else if(strcmp(args[0], "alias") == 0) {
-		alias();
+	
+		char *token1;
+		const char delim1[2] = "=";
+		token1 = strtok(args[1], delim1);
+		alias[numAlias] = token1;
+
+		token1 = strtok(NULL, delim1);
+		aliasEqual[numAlias] = token1;
+		numAlias++;
+	
 	}
-
-
+/*
 	else if(strcmp(args[0], "history") == 0) {
-		history();
+		if (args[1] == NULL) {
+			for(int a= histCounter; a > histCounter - 10; a--) {
+				printf("%s\n", history[a]);
+			}
+		}
 	}
+*/
 
-
-	else if(strcmp(args[0], "setenv") == 0) {
+/*	else if(strcmp(args[0], "setenv") == 0) {
 		setenv();
 	}
 	*/
@@ -245,6 +280,8 @@ int sh( int argc, char **argv, char **envp ){
 /*      else
         fprintf(stderr, "%s: Command not found.\n", args[0]);
     }*/
+
+
 }  
 //	free(cmdpath);
 	free(args);
@@ -253,6 +290,8 @@ int sh( int argc, char **argv, char **envp ){
 	free(owd);
 //	free(prefix);
 	free(path);
+//	free(alias);
+//	free(aliasEqual);
 
 
  	return 0;
