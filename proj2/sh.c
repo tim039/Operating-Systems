@@ -63,14 +63,14 @@ int sh( int argc, char **argv, char **envp ){
   /* putting pathlist into a char* const*/
 
 //put each path in element of an array
-  for(j = 0; temp->next != NULL; j++) {
+ /* for(j = 0; temp->next != NULL; j++) {
 
 	path[j] = temp->element;
 	temp = temp->next; 
  }
  path[j] = NULL;
  numPaths = j - 1;
-
+*/
 
   while ( go == 1 )
   {
@@ -96,19 +96,13 @@ int sh( int argc, char **argv, char **envp ){
 	}
 		
 	
-	history[histCounter] = commandline;
-//	printf("%i\n", histCounter);
-//	memcpy(&history[histCounter],  &commandline, strlen(commandline));
-//	printf("%s\n", history[histCounter]);
-	if(histCounter > 0) {
-		printf("%s\n", history[histCounter-1]);
-		printf("%s\n", history[histCounter]);
-	}	
+	history[histCounter] = calloc(MAX_CANON, sizeof(char));
+	strcpy(history[histCounter], commandline);
+	
 
 
 	histCounter = histCounter + 1;
-//	printf("%s\n", history[histCounter-1]);
-//	printf("%s\n", history[histCounter]);
+
     /* check for each built in command and implement */
  
 
@@ -162,14 +156,28 @@ int sh( int argc, char **argv, char **envp ){
 	else if(strcmp(args[0], "cd") == 0) {
 		char *directory = args[1];
 		int ret;
-		ret = chdir(directory);
+			
+		if(strcmp(args[1], "-") == 0) {
+	
+				
+			ret = chdir(getenv("HOME"));	
 		
-		if((owd = getcwd(NULL, PATH_MAX+1)) == NULL) {
-			perror("getcwd");
-			exit(2);
+			if((owd = getcwd(NULL, PATH_MAX+1)) == NULL) {
+				perror("getcwd");
+				exit(2);
+		
+			}
 		}
-
-		// - returns to prev directory
+		
+		else {
+			ret = chdir(directory);
+			
+			if((owd = getcwd(NULL, PATH_MAX+1)) == NULL) {
+				perror("getcwd");
+				exit(2);
+			}
+		}
+		
 
 	}
 
@@ -253,22 +261,64 @@ int sh( int argc, char **argv, char **envp ){
 	}
 
 	else if(strcmp(args[0], "history") == 0) {
-		printf("%s\n", history[0]);
-		printf("%s\n", history[1]);
 		if (args[1] == NULL) {
 			if(histCounter < 10) {
-			for(int b= histCounter - 1; b >= 0; b--) {
-				printf("%s\n", history[b]);
+				for(int b= histCounter - 1; b >= 0; b--) {
+					printf("%s\n", history[b]);
+				}
 			}
+			else {
+				for(int b = histCounter - 1; b >= histCounter - 10;b--) {
+					printf("%s\n", history[b]);
+				}
+			}
+		}
+
+		else {
+			for(int b = histCounter - 1; b >= histCounter - atoi(args[1]); b--) {
+				printf("%s\n", history[b]);
 			}
 		}
 	}
 
 
-/*	else if(strcmp(args[0], "setenv") == 0) {
-		setenv();
+	else if(strcmp(args[0], "setenv") == 0) {
+		if(args[1] == NULL) {	
+			
+			int z = 1;
+			char *s = *environ;
+
+			for (; s; z++) {
+			    printf("%s\n", s);
+			    s = *(environ+z);
+			}	
+		}	
+
+		else if(args[1] != NULL && args[2] == NULL) {
+			setenv(args[1],"",1);
+		}
+
+		else if(args[2] != NULL && args[3] == NULL) {
+			setenv(args[1], args[2], 1);
+			
+			if(strcmp(args[1], "PATH") == 0) {
+				free(path);
+				path = calloc(MAXARGS, sizeof(char *));
+				pathlist = get_path();
+			
+			}
+
+			
+		}
+
+		else {
+			perror("wrong number of arguments\n");
+		}
 	}
-	*/
+	
+			
+	
+
 	else {
 	
 		pid_t childpid = fork();
@@ -289,7 +339,7 @@ int sh( int argc, char **argv, char **envp ){
 		}
 
 	}
-
+	
      /*  else  program to exec */
    // {
        /* find it */
