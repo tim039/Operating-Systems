@@ -23,6 +23,7 @@ int sh( int argc, char **argv, char **envp ){
   char *commandline = calloc(MAX_CANON, sizeof(char));
   char *command, *arg, *commandpath, *p, *pwd, *owd;
   char **args = calloc(MAXARGS, sizeof(char*));
+  char *nullterm = calloc(MAX_CANON, sizeof(char));
   int uid, i, status, argsct, promptTrue, go = 1;
   int j;
   int numPaths;
@@ -33,8 +34,9 @@ int sh( int argc, char **argv, char **envp ){
   char **path = calloc(MAXARGS, sizeof(char*));
   char **alias = calloc(MAXARGS, sizeof(char*));
   char **aliasEqual = calloc(MAXARGS, sizeof(char*));
- // char **history = calloc(MAXARGS, sizeof(char*));
-  int numAlias=0;//, histCounter = 0;
+  char **history = calloc(MAXARGS, sizeof(char*));
+  int numAlias = 0;
+  int histCounter = 0;
 
   uid = getuid();			//user IDq
   password_entry = getpwuid(uid);      /* get passwd info (struct with user info */
@@ -72,6 +74,8 @@ int sh( int argc, char **argv, char **envp ){
 
   while ( go == 1 )
   {
+
+
     /* print your prompt */
 	if(promptTrue == 0) {
 		printf("%s ", prefix);
@@ -90,11 +94,21 @@ int sh( int argc, char **argv, char **envp ){
 		buffer[len-1] = '\0';	
 		strcpy(commandline, buffer);
 	}
+		
 	
-/*	history[histCounter] = commandline;
-	histCounter++;
-	printf("%s\n", history[histCounter]);
-*/
+	history[histCounter] = commandline;
+//	printf("%i\n", histCounter);
+//	memcpy(&history[histCounter],  &commandline, strlen(commandline));
+//	printf("%s\n", history[histCounter]);
+	if(histCounter > 0) {
+		printf("%s\n", history[histCounter-1]);
+		printf("%s\n", history[histCounter]);
+	}	
+
+
+	histCounter = histCounter + 1;
+//	printf("%s\n", history[histCounter-1]);
+//	printf("%s\n", history[histCounter]);
     /* check for each built in command and implement */
  
 
@@ -134,7 +148,7 @@ int sh( int argc, char **argv, char **envp ){
 	}
 	args[j] = NULL;	
 
-
+	
 
 	if(strcmp(args[0], "where") == 0) {
 		printf("%s\n", where(args[1], pathlist));
@@ -234,18 +248,22 @@ int sh( int argc, char **argv, char **envp ){
 
 		token1 = strtok(NULL, delim1);
 		aliasEqual[numAlias] = token1;
-		numAlias++;
+		numAlias= numAlias + 1;
 	
 	}
-/*
+
 	else if(strcmp(args[0], "history") == 0) {
+		printf("%s\n", history[0]);
+		printf("%s\n", history[1]);
 		if (args[1] == NULL) {
-			for(int a= histCounter; a > histCounter - 10; a--) {
-				printf("%s\n", history[a]);
+			if(histCounter < 10) {
+			for(int b= histCounter - 1; b >= 0; b--) {
+				printf("%s\n", history[b]);
+			}
 			}
 		}
 	}
-*/
+
 
 /*	else if(strcmp(args[0], "setenv") == 0) {
 		setenv();
@@ -290,9 +308,9 @@ int sh( int argc, char **argv, char **envp ){
 	free(owd);
 //	free(prefix);
 	free(path);
+	free(history);
 //	free(alias);
 //	free(aliasEqual);
-
 
  	return 0;
 } /* sh() */

@@ -11,7 +11,20 @@ void sig_handler(int signal);
 int main( int argc, char **argv, char **envp )
 {
   /* put signal set up stuff here */
-
+/*char *test1 = "hello";
+char *bye = "bye";
+char *holder;
+char test[15];
+for(int i = 0; i < strlen(test1);i++) {
+	test[i] = test1[i];
+}
+printf("%s\n", test);
+for(int i = 0; i < strlen(test); i++) {
+	test[i] = bye[i];
+}
+holder = test;
+printf("%s\n", holder);
+*/
  return sh(argc, argv, envp);
 }
 
