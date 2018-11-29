@@ -1,16 +1,62 @@
-# choose your compiler
-CC=gcc
-#CC=gcc -Wall
+# Makefile for UD CISC user-level thread library
 
-mysh: sh.o get_path.o main.c 
-	$(CC) -g main.c sh.o get_path.o -o mysh
-#	$(CC) -g main.c sh.o get_path.o bash_getcwd.o -o mysh
+CC = gcc
+CFLAGS = -g
 
-sh.o: sh.c sh.h
-	$(CC) -g -c sh.c
+LIBOBJS = t_lib.o 
 
-get_path.o: get_path.c get_path.h
-	$(CC) -g -c get_path.c
+TSTOBJS = test01x.o test01.0 test03.o philosophers.o 3test.o
+
+# specify the executable 
+
+EXECS = test01x test01 test03 philosophers 3test
+
+# specify the source files
+
+LIBSRCS = t_lib.c
+
+TSTSRCS = test01x.c test01.c test03.c philosophers.c 3test.c
+
+# ar creates the static thread library
+
+t_lib.a: ${LIBOBJS} Makefile
+	ar rcs t_lib.a ${LIBOBJS}
+
+# here, we specify how each file should be compiled, what
+# files they depend on, etc.
+
+t_lib.o: t_lib.c t_lib.h Makefile
+	${CC} ${CFLAGS} -c t_lib.c
+
+test01.o: test01.c ud_thread.h Makefile
+	${CC} ${CFLAGS} -c test01.c
+	
+test01: test01.o t_lib.a Makefile
+	${CC} ${CFLAGS} test01.o t_lib.a -o test01
+
+test01x.o: test01x.c ud_thread.h Makefile
+	${CC} ${CFLAGS} -c test01x.c
+
+test01x: test01x.o t_lib.a Makefile
+	${CC} ${CFLAGS} test01x.o t_lib.a -o test01x
+	
+test03.o: test03.c ud_thread.h Makefile
+	${CC} ${CFLAGS} -c test03.c
+	
+test03: test03.o t_lib.a Makefile
+	${CC} ${CFLAGS} test03.o t_lib.a -o test03
+	
+philosophers.o: philosophers.c ud_thread.h Makefile
+	${CC} ${CFLAGS} -c philosophers.c
+	
+philosophers: philosophers.o t_lib.a Makefile
+	${CC} ${CFLAGS} philosophers.o t_lib.a -o philosophers
+	
+3test.o: 3test.c ud_thread.h Makefile
+	${CC} ${CFLAGS} -c 3test.c
+	
+3test: 3test.o t_lib.a Makefile
+	${CC} ${CFLAGS} 3test.o t_lib.a -o 3test
 
 clean:
-	rm -rf sh.o get_path.o mysh
+	rm -f t_lib.a ${EXECS} ${LIBOBJS} ${TSTOBJS} 
